@@ -268,6 +268,7 @@ class ShapeRecognitionNode(QtGui.QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Mouse Gesture Recognizer")
         self.gesture_id_counter = 0
         self.gesture_action_window = ()
         self._init_ui()
