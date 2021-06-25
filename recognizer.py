@@ -1,5 +1,9 @@
 """
 File from: https://github.com/PetaPetaPeta/dollar-one-recognizer-python
+
+Adjustments:
+Templates are stored in a dictionary instead of a list, and assigned an ID
+Templates can be removed and edited by specifying their ID
 """
 
 import numpy as np
