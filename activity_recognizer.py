@@ -233,11 +233,7 @@ class GestureListItem(QtGui.QWidget):
         return self.label.text()
 
 
-class ShapeRecognitionNode(Node):
-
-    OUTPUT = "output"
-
-    nodeName = "ShapeRecognition"
+class ShapeRecognitionNode(QtGui.QWidget):
 
     GESTURE_NAME = "name"
     GESTURE_POINTS = "points"
@@ -246,21 +242,16 @@ class ShapeRecognitionNode(Node):
     draw_gesture_window = ()
     gestures = {}
 
-    def __init__(self, name):
-        terminals = {
-            self.OUTPUT: dict(io='out')
-        }
-
+    def __init__(self):
+        super().__init__()
         self.gesture_id_counter = 0
         self.gesture_action_window = ()
         self._init_ui()
         self.recognizer = Recognizer()
-
-        Node.__init__(self, name, terminals=terminals)
+        self.setMinimumSize(500, 700)
 
     def _init_ui(self):
 
-        self.ui = QtGui.QWidget()
         self.main_layout = QtGui.QVBoxLayout()
         self.button_layout = QtGui.QGridLayout()
         self.gesture_list = QtGui.QListWidget()
@@ -279,7 +270,7 @@ class ShapeRecognitionNode(Node):
         self.main_layout.addWidget(self.gesture_list)
         self.main_layout.addWidget(self.draw_widget)
 
-        self.ui.setLayout(self.main_layout)
+        self.setLayout(self.main_layout)
 
     def _init_buttons(self):
         self.add_button = QtGui.QPushButton("Add Gesture")
@@ -303,6 +294,9 @@ class ShapeRecognitionNode(Node):
         self.draw_gesture_window.confirm_pressed.connect(lambda e: self.on_new_gesture_added(dict(e)))
 
     def _on_edit_button_clicked(self):
+        if self.gesture_list.currentItem() is None:
+            return
+
         self.draw_gesture_window = AddGestureWindow(self.gesture_list.currentItem().identifier)
         self.draw_gesture_window.confirmButton.setText("Confirm")
         self.draw_gesture_window.setMouseTracking(True)
@@ -333,6 +327,8 @@ class ShapeRecognitionNode(Node):
 
         template = GestureTemplate(e[AddGestureWindow.GESTURE_ID], point_list)
         self.recognizer.addTemplate(template, e[AddGestureWindow.GESTURE_ID])
+
+        self.gesture_list.itemWidget(self.gesture_list.currentItem()).set_label_text(e[AddGestureWindow.GESTURE_NAME])
 
     def delete_selected_gesture(self):
         self.gestures.pop(self.gesture_list.currentItem().identifier, None)
@@ -443,30 +439,12 @@ class ShapeRecognitionNode(Node):
 
         self.gestures[action_list[0]][self.GESTURE_ACTION] = action_list[1]
 
-    def ctrlWidget(self):
-        return self.ui
 
-
-fclib.registerNodeType(ShapeRecognitionNode, [('Assignment 9',)])
 
 if __name__ == '__main__':
-    app = QtGui.QApplication([])
-    win = QtGui.QMainWindow()
-    win.setWindowTitle('DIPPIDNode demo')
-    win.resize(800, 650)
-    cw = QtGui.QWidget()
-    win.setCentralWidget(cw)
-    layout = QtGui.QGridLayout()
-    cw.setLayout(layout)
-
-    BUFFER_NODE_SIZE = 32
-
-    # Create an empty flowchart with a single input and output
-    fc = Flowchart(terminals={})
-    layout.addWidget(fc.widget(), 0, 0, 2, 1)
-
-    shape_node = fc.createNode('ShapeRecognition', pos=(200, -50))
-
-    win.show()
+    app = QtWidgets.QApplication(sys.argv)
+    widget = ShapeRecognitionNode()
+    widget.show()
+    
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
         sys.exit(QtGui.QApplication.instance().exec_())
