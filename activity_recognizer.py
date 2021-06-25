@@ -93,7 +93,7 @@ class DrawWidget(QtGui.QWidget):
         self.background_color = color
 
     def set_points(self, points):
-        self.points = points
+        self.points = points.copy()
         self.painter_path = QtGui.QPainterPath()
 
         for i in range(0, len(points)):
@@ -169,7 +169,7 @@ class AddGestureWindow(QtGui.QWidget):
 
     def __init__(self, gesture_id):
         super().__init__()
-        uic.loadUi("draw_widget_ui_b.ui", self)
+        uic.loadUi("draw_widget_ui.ui", self)
         self.gesture_id = gesture_id
         self._init_draw_widget()
         self.confirmButton.clicked.connect(self.handle_confirm_clicked)
@@ -318,6 +318,13 @@ class ShapeRecognitionNode(Node):
     def on_gesture_edited(self, e):
         self.gestures[e[AddGestureWindow.GESTURE_ID]][self.GESTURE_NAME] = e[AddGestureWindow.GESTURE_NAME]
         self.gestures[e[AddGestureWindow.GESTURE_ID]][self.GESTURE_POINTS] = e[AddGestureWindow.GESTURE_POINTS]
+
+        point_list = []
+        for point in e[AddGestureWindow.GESTURE_POINTS]:
+            point_list.append([point.x(), point.y()])
+
+        template = GestureTemplate(e[AddGestureWindow.GESTURE_ID], point_list)
+        self.recognizer.addTemplate(template, e[AddGestureWindow.GESTURE_ID])
 
     def delete_selected_gesture(self):
         self.gestures.pop(self.gesture_list.currentItem().identifier, None)

@@ -44,12 +44,16 @@ class Recognizer(object):
             newPoints.append(points[0])
         return newPoints
 
-    def addTemplate(self, template, id):
+    def addTemplate(self, template, gesture_id):
+        """
+        Add a new template with the passed ID
+        If the template with the ID already exists, it will be updated to the new values
+        """
         template.points = self.resample(template.points, numPoints)
         template.points = self.rotateToZero(template.points)
         template.points = self.scaleToSquare(template.points)
         template.points = self.translateToOrigin(template.points)
-        self.template_dict[id] = template
+        self.template_dict[gesture_id] = template
 
     def removeTemplate(self, gesture_id):
         self.template_dict.pop(gesture_id, None)
