@@ -184,6 +184,14 @@ class AddGestureWindow(QtGui.QWidget):
             self.gestureNameInput.setStyleSheet("border: 1px solid red")
             return
 
+        if len(self.draw_widget.points) <= 0:
+            message_box = QtGui.QMessageBox()
+            message_box.setText("Please draw a gesture!")
+            message_box.setWindowTitle("Warning - No Gesture")
+            message_box.setIcon(QtGui.QMessageBox.Warning)
+            message_box.exec_()
+            return
+
         self.return_dict[self.GESTURE_NAME] = self.gestureNameInput.text()
         self.return_dict[self.GESTURE_POINTS] = self.draw_widget.points.copy()
         self.return_dict[self.GESTURE_ID] = self.gesture_id
