@@ -169,7 +169,7 @@ class AddGestureWindow(QtGui.QWidget):
 
     def __init__(self, gesture_id):
         super().__init__()
-        uic.loadUi("draw_widget_ui.ui", self)
+        uic.loadUi("add_gesture_widget.ui", self)
         self.gesture_id = gesture_id
         self._init_draw_widget()
         self.confirmButton.clicked.connect(self.handle_confirm_clicked)
