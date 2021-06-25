@@ -4,7 +4,6 @@ File from: https://github.com/PetaPetaPeta/dollar-one-recognizer-python
 
 import numpy as np
 import numpy.linalg as linalg
-from itertools import izip
 
 phi = 0.5 * (-1 + np.sqrt(5))
 numPoints = 255
@@ -143,7 +142,7 @@ def pathDistance(path1, path2):
     if len(path1) != len(path2):
         raise Exception('Path lengths do not match!')
     d = 0
-    for p_1, p_2 in izip(path1, path2):
+    for p_1, p_2 in zip(path1, path2):
         d = d + getDistance(p_1, p_2)
     return d / len(path1)
 
@@ -162,12 +161,12 @@ def rotate2D(pts, cnt, ang=np.pi / 4):
 
 def pathLength(points):
     length = 0
-    for (i, j) in izip(points, points[1:]):
+    for (i, j) in zip(points, points[1:]):
         length += getDistance(i, j)
     return length
 
 
 def pairwiseIterator(elems):
-    for (i, j) in izip(elems, elems[1:]):
+    for (i, j) in zip(elems, elems[1:]):
         yield i, j
     yield elems[-1], elems[0]
