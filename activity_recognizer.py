@@ -4,6 +4,7 @@ Need to install the pycaw module (used for volume adjustment)
 
 import os
 import subprocess
+import webbrowser
 import platform
 from PyQt5 import uic
 import numpy as np
@@ -118,6 +119,7 @@ class SetGestureActionWindow(QtGui.QWidget):
         self.volumeButton.clicked.connect(lambda: self.on_radio_button_clicked(self.volumeButton))
         self.fileButton.clicked.connect(lambda: self.on_radio_button_clicked(self.fileButton))
         self.scriptButton.clicked.connect(lambda: self.on_radio_button_clicked(self.scriptButton))
+        self.linkButton.clicked.connect(lambda: self.on_radio_button_clicked(self.linkButton))
 
         self.settings_widget = VolumeActionWidget()
         self.widgetLayout.addWidget(self.settings_widget)
@@ -140,6 +142,10 @@ class SetGestureActionWindow(QtGui.QWidget):
         elif button is self.scriptButton and self.last_button is not self.scriptButton:
             self.settings_widget = ExecuteScriptWidget()
             self.last_button = self.scriptButton
+
+        elif button is self.linkButton and self.last_button is not self.linkButton:
+            self.settings_widget = OpenUrlWidget()
+            self.last_button = self.linkButton
 
         self.widgetLayout.addWidget(self.settings_widget)
 
@@ -315,6 +321,7 @@ class ShapeRecognitionNode(Node):
 
     def delete_selected_gesture(self):
         self.gestures.pop(self.gesture_list.currentItem().identifier, None)
+        self.recognizer.removeTemplate(self.gesture_list.currentItem().identifier)
         row = self.gesture_list.currentRow()
         self.gesture_list.takeItem(row)
         self.confirm_window_delete_gesture.close()
@@ -332,7 +339,7 @@ class ShapeRecognitionNode(Node):
             point_list.append([point.x(), point.y()])
 
         template = GestureTemplate(e[AddGestureWindow.GESTURE_ID], point_list)
-        self.recognizer.addTemplate(template)
+        self.recognizer.addTemplate(template, e[AddGestureWindow.GESTURE_ID])
         self.gesture_id_counter += 1
 
     def add_gesture_to_list(self, gesture_id, name):
@@ -390,6 +397,9 @@ class ShapeRecognitionNode(Node):
         elif gesture[self.GESTURE_ACTION][0] is AbstractActionWidget.ACTION_SCRIPT:
             script = gesture[self.GESTURE_ACTION][1]
             Popen(['sh', "-c", script])
+
+        elif gesture[self.GESTURE_ACTION][0] is AbstractActionWidget.ACTION_URL:
+            webbrowser.open(gesture[self.GESTURE_ACTION][1], new=2)
 
     def adjust_volume(self, gesture):
         """

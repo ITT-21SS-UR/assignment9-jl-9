@@ -22,6 +22,7 @@ class AbstractActionWidget(QtGui.QWidget):
     ACTION_VOLUME = "volume"
     ACTION_FILE = "file"
     ACTION_SCRIPT = "script"
+    ACTION_URL = "url"
 
     def __init__(self):
         super().__init__()
@@ -101,4 +102,26 @@ class ExecuteScriptWidget(AbstractActionWidget):
 
     def on_text_changed(self):
         self.value = self.input.toPlainText()
+
+
+class OpenUrlWidget(AbstractActionWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.layout = QtGui.QHBoxLayout()
+
+        self.label = QtGui.QLabel("Open an URL: ")
+        self.input = QtGui.QLineEdit()
+        self.input.setPlaceholderText("https://elearning.ur.de/")
+        self.input.textChanged.connect(self.on_text_changed)
+
+        self.layout.addWidget(self.label)
+        self.layout.addWidget(self.input)
+
+        self.setLayout(self.layout)
+        self.action = self.ACTION_URL
+
+    def on_text_changed(self):
+        self.value = self.input.text()
+
 

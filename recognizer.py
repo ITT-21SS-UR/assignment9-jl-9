@@ -17,7 +17,7 @@ class Recognizer(object):
         self.angle_range = angle_range
         self.angle_step = angle_step
         self.square_size = square_size
-        self.templates = []
+        self.template_dict = {}
 
     def resample(self, points, n):
         # Get the length that should be between the returned points
@@ -44,12 +44,15 @@ class Recognizer(object):
             newPoints.append(points[0])
         return newPoints
 
-    def addTemplate(self, template):
+    def addTemplate(self, template, id):
         template.points = self.resample(template.points, numPoints)
         template.points = self.rotateToZero(template.points)
         template.points = self.scaleToSquare(template.points)
         template.points = self.translateToOrigin(template.points)
-        self.templates.append(template)
+        self.template_dict[id] = template
+
+    def removeTemplate(self, gesture_id):
+        self.template_dict.pop(gesture_id, None)
 
     def indicativeAngle(self, points):
         ''' Returns the angle (radians) to rotate to get the indicative angle '''
@@ -103,11 +106,11 @@ class Recognizer(object):
         points = self.translateToOrigin(points)
         b = np.inf
         selected_template = None
-        for template in self.templates:
-            d = self.distanceAtBestAngle(points, template.points, -self.angle_range, self.angle_range, self.angle_step)
+        for key in self.template_dict:
+            d = self.distanceAtBestAngle(points, self.template_dict[key].points, -self.angle_range, self.angle_range, self.angle_step)
             if d < b:  # Get the best distance and template
                 b = d
-                selected_template = template
+                selected_template = self.template_dict[key]
         score = 1 - b / (0.5 * np.sqrt(self.square_size ** 2 + self.square_size ** 2))
         return selected_template, score
 
