@@ -384,10 +384,10 @@ class ShapeRecognitionNode(QtGui.QWidget):
         my_list_widget.set_label_text(name)
         my_list_widget.set_button_text(" Edit Gesture Action")
 
-        # redo icon from flaticon.com - Free for personal and commercial purpose with attribution link:
-        # https://www.flaticon.com/free-icon/redo_1828040?term=redo&page=1&position=2&page=1&position=2&related_id
-        # =1828040&origin=tag
-        my_list_widget.set_button_icon(QtGui.QIcon('redo.png'))
+        # edit icon from flaticon.com, by Kiranshastry - Free for personal and commercial purpose with attribution link:
+        # https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=2&page=1&position=2&related_id=
+        # 1159633&origin=tag
+        my_list_widget.set_button_icon(QtGui.QIcon('edit.png'))
 
         list_item = QtGui.QListWidgetItem(self.gesture_list)
         list_item.setSizeHint(my_list_widget.sizeHint())
