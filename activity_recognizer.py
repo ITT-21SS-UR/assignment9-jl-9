@@ -21,6 +21,30 @@ class GestureTemplate:
         self.points = points
 
 
+class RecognizedGestureDisplayWidget(QtGui.QWidget):
+
+    def __init__(self):
+        super().__init__()
+
+        self.layout = QtGui.QVBoxLayout()
+
+        self.header = QtGui.QLabel("Last recognized Gesture:")
+        self.gesture_name_label = QtGui.QLabel("---")
+        self.gesture_certainty_label = QtGui.QLabel("---")
+
+        self.layout.addWidget(self.header)
+        self.layout.addWidget(self.gesture_name_label)
+        self.layout.addWidget(self.gesture_certainty_label)
+
+        self.setLayout(self.layout)
+
+    def set_gesture_name(self, name):
+        self.gesture_name_label.setText(name)
+
+    def set_certainty(self, certainty):
+        self.gesture_certainty_label.setText(str(certainty) + "% certainty")
+
+
 class DrawWidget(QtGui.QWidget):
 
     background_color = None
@@ -258,6 +282,7 @@ class ShapeRecognitionNode(QtGui.QWidget):
         self.train_help_label = QtGui.QLabel()
         self.draw_widget = DrawWidget()
         self.draw_widget.gesture_drawn.connect(self.on_gesture_drawn)
+        self.recognized_gesture_widget = RecognizedGestureDisplayWidget()
 
         self._init_buttons()
         self._init_confirm_window()
@@ -269,6 +294,7 @@ class ShapeRecognitionNode(QtGui.QWidget):
         self.main_layout.addLayout(self.button_layout)
         self.main_layout.addWidget(self.gesture_list)
         self.main_layout.addWidget(self.draw_widget)
+        self.main_layout.addWidget(self.recognized_gesture_widget)
 
         self.setLayout(self.main_layout)
 
@@ -382,8 +408,9 @@ class ShapeRecognitionNode(QtGui.QWidget):
         if matched_template is None or score is None:
             return
 
-        print(self.gestures[matched_template.name][self.GESTURE_NAME])
-        print(score)
+        score = round(score * 100, 2)
+        self.recognized_gesture_widget.set_gesture_name(self.gestures[matched_template.name][self.GESTURE_NAME])
+        self.recognized_gesture_widget.set_certainty(score)
 
         self.perform_gesture_action(matched_template.name)
 
@@ -445,6 +472,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     widget = ShapeRecognitionNode()
     widget.show()
-    
+
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
         sys.exit(QtGui.QApplication.instance().exec_())
