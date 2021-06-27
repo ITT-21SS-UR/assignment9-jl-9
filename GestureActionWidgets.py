@@ -1,20 +1,5 @@
-import PyQt5.Qt
-import numpy.fft
-from pyqtgraph.flowchart import Flowchart, Node
-from pyqtgraph.flowchart.library.common import CtrlNode
-import pyqtgraph.flowchart.library as fclib
 from pyqtgraph.Qt import QtGui, QtCore, QtWidgets
-import pyqtgraph as pg
-from enum import Enum
-from PyQt5 import uic
-import numpy as np
-from sklearn import svm
-from sklearn.exceptions import NotFittedError
-from scipy import signal
-from DIPPID import SensorUDP, SensorSerial, SensorWiimote
-from DIPPID_pyqtnode import BufferNode, DIPPIDNode
-from recognizer import Recognizer
-import sys
+
 
 
 class AbstractActionWidget(QtGui.QWidget):
