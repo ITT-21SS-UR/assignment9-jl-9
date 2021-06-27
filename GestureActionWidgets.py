@@ -1,7 +1,6 @@
 from pyqtgraph.Qt import QtGui, QtCore, QtWidgets
 
 
-
 class AbstractActionWidget(QtGui.QWidget):
 
     ACTION_VOLUME = "volume"
