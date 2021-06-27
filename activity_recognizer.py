@@ -468,7 +468,6 @@ class ShapeRecognitionNode(QtGui.QWidget):
         self.gestures[action_list[0]][self.GESTURE_ACTION] = action_list[1]
 
 
-
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     widget = ShapeRecognitionNode()
