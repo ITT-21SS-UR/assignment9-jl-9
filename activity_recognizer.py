@@ -9,7 +9,7 @@ import platform
 from PyQt5 import uic
 import numpy as np
 from GestureActionWidgets import *
-from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
+# from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
 from subprocess import Popen
 from recognizer import Recognizer
 import sys
@@ -446,12 +446,12 @@ class ShapeRecognitionNode(QtGui.QWidget):
         Adjust system volume for all processes
         Take notes of your settings beforehand :)
         """
-        target_vol = int(gesture[self.GESTURE_ACTION][1]) / 100
-        sessions = AudioUtilities.GetAllSessions()
-        for session in sessions:
-            volume = session._ctl.QueryInterface(ISimpleAudioVolume)
-            if session.Process:
-                volume.SetMasterVolume(target_vol, None)
+        # target_vol = int(gesture[self.GESTURE_ACTION][1]) / 100
+        # sessions = AudioUtilities.GetAllSessions()
+        # for session in sessions:
+        #     volume = session._ctl.QueryInterface(ISimpleAudioVolume)
+        #     if session.Process:
+        #         volume.SetMasterVolume(target_vol, None)
 
     def on_set_gesture_action_clicked(self, gesture_id):
         self.gesture_action_window = SetGestureActionWindow(gesture_id)
