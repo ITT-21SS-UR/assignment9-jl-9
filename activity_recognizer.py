@@ -11,6 +11,7 @@ import numpy as np
 from GestureActionWidgets import *
 from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
 from subprocess import Popen
+from recognizer import Recognizer
 import sys
 
 
