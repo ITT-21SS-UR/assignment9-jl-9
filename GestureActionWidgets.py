@@ -1,3 +1,5 @@
+import os.path
+
 from pyqtgraph.Qt import QtGui, QtCore, QtWidgets
 
 
@@ -18,14 +20,17 @@ class AbstractActionWidget(QtGui.QWidget):
         Shows a message box and returns False if input is empty
         """
         if self.value is None or len(self.value.strip()) == 0:
-            message_box = QtGui.QMessageBox()
-            message_box.setText("Please enter a valid action value!")
-            message_box.setWindowTitle("Warning - Empty value")
-            message_box.setIcon(QtGui.QMessageBox.Warning)
-            message_box.exec_()
+            self.show_warning()
             return False
 
         return True
+
+    def show_warning(self):
+        message_box = QtGui.QMessageBox()
+        message_box.setText("Please enter a valid action value!")
+        message_box.setWindowTitle("Warning - Empty value")
+        message_box.setIcon(QtGui.QMessageBox.Warning)
+        message_box.exec_()
 
 
 class OpenFileWidget(AbstractActionWidget):
@@ -39,6 +44,7 @@ class OpenFileWidget(AbstractActionWidget):
         self.label = QtGui.QLabel("Open File: ")
         self.button = QtGui.QPushButton("Open...")
         self.filename = QtGui.QLineEdit()
+        self.filename.textChanged.connect(self.on_text_changed)
 
         self.layout.addWidget(self.label)
         self.layout.addWidget(self.button)
@@ -56,8 +62,20 @@ class OpenFileWidget(AbstractActionWidget):
         if file_dialog.exec_():
             self.filename.setText(file_dialog.selectedFiles()[0])
             self.selected_files = file_dialog.selectedFiles()[0]
-            self.value = file_dialog.selectedFiles()[0]
 
+    def on_text_changed(self):
+        self.value = self.filename.text()
+
+    def is_valid(self):
+        """
+        Custom implementation to check whether the specified file exists or not
+        """
+        if self.value is not None and os.path.exists(self.value):
+            return True
+
+        else:
+            self.show_warning()
+            return False
 
 class ExecuteScriptWidget(AbstractActionWidget):
 
