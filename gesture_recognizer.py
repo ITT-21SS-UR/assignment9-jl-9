@@ -1,6 +1,3 @@
-"""
-Need to install the pycaw module (used for volume adjustment)
-"""
 
 import os
 import subprocess
@@ -9,7 +6,6 @@ import platform
 from PyQt5 import uic
 import numpy as np
 from GestureActionWidgets import *
-# from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
 from subprocess import Popen
 from recognizer import Recognizer
 import sys
@@ -138,15 +134,14 @@ class SetGestureActionWindow(QtGui.QWidget):
         super().__init__()
         uic.loadUi("action_widget_ui.ui", self)
         self.gesture_id = gesture_id
-        self.volumeButton.setChecked(True)
-        self.last_button = self.volumeButton
+        self.fileButton.setChecked(True)
+        self.last_button = self.fileButton
 
-        self.volumeButton.clicked.connect(lambda: self.on_radio_button_clicked(self.volumeButton))
         self.fileButton.clicked.connect(lambda: self.on_radio_button_clicked(self.fileButton))
         self.scriptButton.clicked.connect(lambda: self.on_radio_button_clicked(self.scriptButton))
         self.linkButton.clicked.connect(lambda: self.on_radio_button_clicked(self.linkButton))
 
-        self.settings_widget = VolumeActionWidget()
+        self.settings_widget = OpenFileWidget()
         self.widgetLayout.addWidget(self.settings_widget)
 
         self.confirmButton.clicked.connect(self.on_confirm_clicked)
@@ -156,11 +151,7 @@ class SetGestureActionWindow(QtGui.QWidget):
 
         self.widgetLayout.removeWidget(self.settings_widget)
 
-        if button is self.volumeButton and self.last_button is not self.volumeButton:
-            self.settings_widget = VolumeActionWidget()
-            self.last_button = self.volumeButton
-
-        elif button is self.fileButton and self.last_button is not self.fileButton:
+        if button is self.fileButton and self.last_button is not self.fileButton:
             self.settings_widget = OpenFileWidget()
             self.last_button = self.fileButton
 
@@ -175,8 +166,9 @@ class SetGestureActionWindow(QtGui.QWidget):
         self.widgetLayout.addWidget(self.settings_widget)
 
     def on_confirm_clicked(self):
-        self.confirmed.emit([self.gesture_id, (self.settings_widget.action, self.settings_widget.value)])
-        self.close()
+        if self.settings_widget.is_valid():
+            self.confirmed.emit([self.gesture_id, (self.settings_widget.action, self.settings_widget.value)])
+            self.close()
 
 
 class AddGestureWindow(QtGui.QWidget):
@@ -422,9 +414,6 @@ class ShapeRecognitionNode(QtGui.QWidget):
         if gesture[self.GESTURE_ACTION] is None:
             return
 
-        elif gesture[self.GESTURE_ACTION][0] is AbstractActionWidget.ACTION_VOLUME:
-            self.adjust_volume(gesture)
-
         elif gesture[self.GESTURE_ACTION][0] is AbstractActionWidget.ACTION_FILE:
             path = gesture[self.GESTURE_ACTION][1]
             print(os.path.abspath(gesture[self.GESTURE_ACTION][1]))
@@ -440,18 +429,6 @@ class ShapeRecognitionNode(QtGui.QWidget):
 
         elif gesture[self.GESTURE_ACTION][0] is AbstractActionWidget.ACTION_URL:
             webbrowser.open(gesture[self.GESTURE_ACTION][1], new=2)
-
-    def adjust_volume(self, gesture):
-        """
-        Adjust system volume for all processes
-        Take notes of your settings beforehand :)
-        """
-        # target_vol = int(gesture[self.GESTURE_ACTION][1]) / 100
-        # sessions = AudioUtilities.GetAllSessions()
-        # for session in sessions:
-        #     volume = session._ctl.QueryInterface(ISimpleAudioVolume)
-        #     if session.Process:
-        #         volume.SetMasterVolume(target_vol, None)
 
     def on_set_gesture_action_clicked(self, gesture_id):
         self.gesture_action_window = SetGestureActionWindow(gesture_id)

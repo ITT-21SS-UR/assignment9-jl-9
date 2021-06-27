@@ -3,7 +3,6 @@ from pyqtgraph.Qt import QtGui, QtCore, QtWidgets
 
 class AbstractActionWidget(QtGui.QWidget):
 
-    ACTION_VOLUME = "volume"
     ACTION_FILE = "file"
     ACTION_SCRIPT = "script"
     ACTION_URL = "url"
@@ -13,27 +12,20 @@ class AbstractActionWidget(QtGui.QWidget):
         self.action = None
         self.value = None
 
+    def is_valid(self):
+        """
+        Returns True if input is valid
+        Shows a message box and returns False if input is empty
+        """
+        if self.value is None or len(self.value.strip()) == 0:
+            message_box = QtGui.QMessageBox()
+            message_box.setText("Please enter a valid action value!")
+            message_box.setWindowTitle("Warning - Empty value")
+            message_box.setIcon(QtGui.QMessageBox.Warning)
+            message_box.exec_()
+            return False
 
-class VolumeActionWidget(AbstractActionWidget):
-
-    def __init__(self):
-        super().__init__()
-        self.layout = QtGui.QHBoxLayout()
-
-        self.label = QtGui.QLabel("Adjust Volume to: ")
-        self.input = QtGui.QLineEdit()
-        self.input.setPlaceholderText("0 - 100")
-        self.input.textChanged.connect(self.on_text_changed)
-        self.input.setValidator(QtGui.QIntValidator(0, 100))
-
-        self.layout.addWidget(self.label)
-        self.layout.addWidget(self.input)
-
-        self.setLayout(self.layout)
-        self.action = self.ACTION_VOLUME
-
-    def on_text_changed(self):
-        self.value = self.input.text()
+        return True
 
 
 class OpenFileWidget(AbstractActionWidget):
@@ -107,5 +99,31 @@ class OpenUrlWidget(AbstractActionWidget):
 
     def on_text_changed(self):
         self.value = self.input.text()
+
+
+# class VolumeActionWidget(AbstractActionWidget):
+#     """
+#     Didn't end up using this since it's not working on linux
+#     Press F
+#     """
+#
+#     def __init__(self):
+#         super().__init__()
+#         self.layout = QtGui.QHBoxLayout()
+#
+#         self.label = QtGui.QLabel("Adjust Volume to: ")
+#         self.input = QtGui.QLineEdit()
+#         self.input.setPlaceholderText("0 - 100")
+#         self.input.textChanged.connect(self.on_text_changed)
+#         self.input.setValidator(QtGui.QIntValidator(0, 100))
+#
+#         self.layout.addWidget(self.label)
+#         self.layout.addWidget(self.input)
+#
+#         self.setLayout(self.layout)
+#         self.action = self.ACTION_VOLUME
+#
+#     def on_text_changed(self):
+#         self.value = self.input.text()
 
 
