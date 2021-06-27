@@ -30,19 +30,19 @@ class RecognizedGestureDisplayWidget(QtGui.QWidget):
 
         self.header = QtGui.QLabel("Last recognized Gesture:")
         self.gesture_name_label = QtGui.QLabel("---")
-        self.gesture_certainty_label = QtGui.QLabel("---")
+        self.gesture_match_label = QtGui.QLabel("---")
 
         self.layout.addWidget(self.header)
         self.layout.addWidget(self.gesture_name_label)
-        self.layout.addWidget(self.gesture_certainty_label)
+        self.layout.addWidget(self.gesture_match_label)
 
         self.setLayout(self.layout)
 
     def set_gesture_name(self, name):
         self.gesture_name_label.setText(name)
 
-    def set_certainty(self, certainty):
-        self.gesture_certainty_label.setText(str(certainty) + "% certainty")
+    def set_match(self, match):
+        self.gesture_match_label.setText(str(match) + "% match")
 
 
 class DrawWidget(QtGui.QWidget):
@@ -411,7 +411,7 @@ class ShapeRecognitionNode(QtGui.QWidget):
 
         score = round(score * 100, 2)
         self.recognized_gesture_widget.set_gesture_name(self.gestures[matched_template.name][self.GESTURE_NAME])
-        self.recognized_gesture_widget.set_certainty(score)
+        self.recognized_gesture_widget.set_match(score)
 
         self.perform_gesture_action(matched_template.name)
 
