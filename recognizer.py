@@ -115,8 +115,8 @@ class Recognizer(object):
         b = np.inf
         selected_template = None
         for key in self.template_dict:
-            d = self.distanceAtBestAngle\
-                (points, self.template_dict[key].points, -self.angle_range, self.angle_range, self.angle_step)
+            d = self.distanceAtBestAngle(
+                points, self.template_dict[key].points, -self.angle_range, self.angle_range, self.angle_step)
             if d < b:  # Get the best distance and template
                 b = d
                 selected_template = self.template_dict[key]

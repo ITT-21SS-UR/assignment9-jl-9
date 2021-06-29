@@ -77,6 +77,7 @@ class OpenFileWidget(AbstractActionWidget):
             self.show_warning()
             return False
 
+
 class ExecuteScriptWidget(AbstractActionWidget):
 
     def __init__(self):
@@ -143,5 +144,3 @@ class OpenUrlWidget(AbstractActionWidget):
 #
 #     def on_text_changed(self):
 #         self.value = self.input.text()
-
-
